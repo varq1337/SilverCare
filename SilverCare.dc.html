@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="./SilverCare.css" />
+</helmet>
+<div class="sc-1">
+
+  <div class="sc-2">
+
+    <div class="sc-3">
+      <span>{{ clockText }}</span>
+      <span class="sc-4">▁▃▅ ⌁ ▮</span>
+    </div>
+
+    <sc-if value="{{ isWelcome }}" hint-placeholder-val="{{ false }}">
+      <div class="sc-42">
+        <div class="sc-43">Добро пожаловать</div>
+        <div class="sc-7">SilverCare напомнит о лекарствах. Кто вы?</div>
+      </div>
+
+      <div class="sc-44">
+        <button class="role-card" onClick="{{ onPickSenior }}">
+          <div class="role-title">Мне нужна помощь</div>
+          <div class="role-text">Я буду получать напоминания о своих лекарствах</div>
+        </button>
+        <button class="role-card" onClick="{{ onPickHelper }}">
+          <div class="role-title">Я помогаю близкому</div>
+          <div class="role-text">Я родственник или опекун и хочу знать о пропущенных приёмах</div>
+        </button>
+      </div>
+
+      <div class="sc-52">
+        <button class="link-btn" onClick="{{ onDemo }}">Продолжить без регистрации</button>
+        <div class="sc-55"></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+      <div class="sc-42">
+        <div class="sc-43">{{ signupTitle }}</div>
+        <div class="sc-7">Только имя и номер телефона</div>
+      </div>
+
+      <div class="sc-92">
+        <div class="sc-93">
+          <div class="sc-94">ВАШЕ ИМЯ</div>
+          <input class="sc-115" value="{{ regName }}" onChange="{{ onRegName }}" placeholder="Например, Мария" />
+        </div>
+        <div class="sc-93">
+          <div class="sc-94">НОМЕР ТЕЛЕФОНА</div>
+          <input class="sc-116" value="{{ regPhone }}" onChange="{{ onRegPhone }}" type="tel" placeholder="+7 900 000-00-00" />
+        </div>
+        <sc-if value="{{ hasRegError }}" hint-placeholder-val="{{ false }}">
+          <div class="form-error">{{ regError }}</div>
+        </sc-if>
+      </div>
+
+      <div class="sc-52">
+        <button class="sc-53" onClick="{{ onSignupNext }}">Получить код</button>
+        <button class="sc-54" onClick="{{ onAuthBack }}">Назад</button>
+        <div class="sc-55"></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isVerify }}" hint-placeholder-val="{{ false }}">
+      <div class="sc-42">
+        <div class="sc-43">Код из SMS</div>
+        <div class="sc-7">Мы отправили код на {{ regPhone }}</div>
+      </div>
+
+      <div class="sc-92">
+        <div class="sc-93">
+          <div class="sc-94">4 ЦИФРЫ ИЗ СООБЩЕНИЯ</div>
+          <input class="code-input" value="{{ regCode }}" onChange="{{ onRegCode }}" type="tel" inputmode="numeric" autocomplete="one-time-code" maxlength="4" placeholder="••••" />
+        </div>
+        <sc-if value="{{ hasRegError }}" hint-placeholder-val="{{ false }}">
+          <div class="form-error">{{ regError }}</div>
+        </sc-if>
+        <div class="sc-51">Демонстрационный режим: введите код 1234.</div>
+      </div>
+
+      <div class="sc-52">
+        <button class="sc-53" onClick="{{ onVerify }}">Подтвердить</button>
+        <button class="sc-54" onClick="{{ onAuthBack }}">Изменить номер</button>
+        <div class="sc-55"></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isWatch }}" hint-placeholder-val="{{ false }}">
+      <div class="sc-42">
+        <div class="sc-43">Ваш близкий</div>
+        <div class="sc-7">Мы сообщим на ваш номер, если он пропустит лекарство</div>
+      </div>
+
+      <div class="sc-92">
+        <div class="sc-93">
+          <div class="sc-94">ИМЯ БЛИЗКОГО</div>
+          <input class="sc-115" value="{{ loveName }}" onChange="{{ onLoveName }}" placeholder="Например, Мама" />
+        </div>
+        <div class="sc-93">
+          <div class="sc-94">ЕГО НОМЕР ТЕЛЕФОНА</div>
+          <input class="sc-116" value="{{ lovePhone }}" onChange="{{ onLovePhone }}" type="tel" placeholder="+7 900 000-00-00" />
+        </div>
+        <sc-if value="{{ hasRegError }}" hint-placeholder-val="{{ false }}">
+          <div class="form-error">{{ regError }}</div>
+        </sc-if>
+      </div>
+
+      <div class="sc-52">
+        <button class="sc-53" onClick="{{ onWatchSave }}">Сохранить</button>
+        <button class="sc-54" onClick="{{ onWatchSkip }}">{{ watchSkipLabel }}</button>
+        <div class="sc-55"></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+      <div class="sc-42">
+        <div class="sc-43">Настройки</div>
+        <div class="sc-7">{{ accStatus }}</div>
+      </div>
+
+      <div class="sc-44">
+        <sc-if value="{{ hasAccount }}" hint-placeholder-val="{{ false }}">
+          <div class="sc-48">
+            <div class="sc-20">ВАШ АККАУНТ</div>
+            <div class="sc-49">{{ accName }}</div>
+            <div class="sc-50">{{ accPhone }} · {{ accRole }}</div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isHelperAcc }}" hint-placeholder-val="{{ false }}">
+          <button class="sc-82" onClick="{{ onEditWatch }}">
+            <div class="sc-84">
+              <div class="sc-20">БЛИЗКИЙ ЧЕЛОВЕК</div>
+              <div class="sc-85">{{ watchedName }}</div>
+              <div class="sc-34">{{ watchedPhone }}</div>
+            </div>
+            <div class="sc-113">›</div>
+          </button>
+        </sc-if>
+        <sc-if value="{{ isDemoAcc }}" hint-placeholder-val="{{ false }}">
+          <div class="sc-51">Вы в демо-версии. Данные никому не отправляются.</div>
+        </sc-if>
+      </div>
+
+      <div class="sc-52">
+        <sc-if value="{{ hasAccount }}" hint-placeholder-val="{{ false }}">
+          <button class="sc-106" onClick="{{ onLogout }}">Выйти из аккаунта</button>
+        </sc-if>
+        <sc-if value="{{ isDemoAcc }}" hint-placeholder-val="{{ false }}">
+          <button class="sc-53" onClick="{{ onRegisterFromDemo }}">Зарегистрироваться</button>
+        </sc-if>
+        <button class="sc-54" onClick="{{ onBack }}">Назад к расписанию</button>
+        <div class="sc-55"></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isToday }}" hint-placeholder-val="{{ true }}">
+      <div class="sc-5">
+        <div class="today-top">
+          <div class="sc-6">Сегодня</div>
+          <button class="top-pill" onClick="{{ onOpenSettings }}">Настройки</button>
+        </div>
+        <div class="sc-7">{{ dateText }} · принято {{ takenCount }} из {{ totalCount }}</div>
+      </div>
+
+      <sc-if value="{{ isDue }}" hint-placeholder-val="{{ true }}">
+        <div class="sc-8">
+          <div class="sc-9">
+            <span class="sc-10"></span>
+            <span class="sc-11">ПОРА ПРИНЯТЬ</span>
+          </div>
+          <div class="sc-12">{{ dueName }}</div>
+          <div class="sc-13">{{ dueDose }}</div>
+          <div class="sc-7">{{ dueNote }} · назначено на {{ dueTime }}</div>
+        </div>
+
+        <div class="sc-14">
+          <button class="sc-15" onClick="{{ onTake }}">
+            <span class="sc-16">✓</span> Я принял
+          </button>
+          <div class="sc-17">
+            <button class="sc-18" onClick="{{ onSnooze }}">Через 15 мин</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isWaiting }}" hint-placeholder-val="{{ false }}">
+        <div class="sc-19">
+          <div class="sc-20">СЛЕДУЮЩИЙ ПРИЁМ</div>
+          <div class="sc-21">{{ nextTime }}</div>
+          <div class="sc-22">{{ nextName }}</div>
+          <div class="sc-7">{{ nextDose }} · {{ countdownText }}</div>
+        </div>
+        <div class="sc-23">
+          Телефон напомнит сам, когда придёт время. Ничего нажимать не нужно.
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+        <div class="sc-24">
+          <div class="sc-25">✓</div>
+          <div class="sc-26">{{ doneTitle }}</div>
+          <div class="sc-7">{{ doneSubtitle }}</div>
+        </div>
+      </sc-if>
+
+      <div class="sc-27">
+        <div class="sc-28">РАСПИСАНИЕ ДНЯ</div>
+        <sc-for list="{{ doses }}" as="d" hint-placeholder-count="4">
+          <div class="sc-29">
+            <div class="sc-30">
+              <div class="sc-31">{{ d.time }}</div>
+              <div class="sc-32 {{ d.cls }}">{{ d.status }}</div>
+            </div>
+            <div class="sc-33">{{ d.name }}</div>
+            <div class="sc-34">{{ d.dose }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div class="sc-35">
+        <button class="sc-36" onClick="{{ onSos }}">
+          <span class="sc-37"></span> Мне нужна помощь
+        </button>
+        <button class="sc-38" onClick="{{ onOpenContacts }}">Близкие контакты</button>
+        <button class="sc-38" onClick="{{ onOpenList }}">Мои лекарства</button>
+        <button class="sc-39" onClick="{{ onOpenBrain }}">
+          <span>Тренировка памяти</span>
+          <span class="sc-40 {{ brainBadgeCls }}">{{ brainBadge }}</span>
+        </button>
+        <div class="sc-41"></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isBrain }}" hint-placeholder-val="{{ false }}">
+      <div class="sc-42">
+        <div class="sc-43">Тренировка памяти</div>
+        <div class="sc-7">5 минут в день — и вспоминать легче</div>
+      </div>
+
+      <div class="sc-44">
+        <div class="sc-17">
+          <div class="sc-45">
+            <div class="sc-46">{{ brainStreak }}</div>
+            <div class="sc-47">дней подряд</div>
+          </div>
+          <div class="sc-45">
+            <div class="sc-46">{{ brainLast }}</div>
+            <div class="sc-47">прошлый результат</div>
+          </div>
+        </div>
+
+        <div class="sc-48">
+          <div class="sc-20">СЕГОДНЯШНЕЕ УПРАЖНЕНИЕ</div>
+          <div class="sc-49">Запомните четыре слова</div>
+          <div class="sc-50">Слова покажутся на несколько секунд. Потом нужно узнать их среди других. Три вопроса — и всё.</div>
+        </div>
+
+        <div class="sc-51">
+          Ошибиться не страшно. Здесь нет оценок — только тренировка.
+        </div>
+      </div>
+
+      <div class="sc-52">
+        <button class="sc-53" onClick="{{ onBrainStart }}">Начать</button>
+        <button class="sc-54" onClick="{{ onBack }}">Назад к расписанию</button>
+        <div class="sc-55"></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isBrainPlay }}" hint-placeholder-val="{{ false }}">
+      <div class="sc-56">
+        <div class="sc-20">{{ brainStepLabel }}</div>
+        <div class="sc-57">{{ brainTitle }}</div>
+      </div>
+
+      <sc-if value="{{ brainShowing }}" hint-placeholder-val="{{ false }}">
+        <div class="sc-58">
+          <sc-for list="{{ brainWords }}" as="w" hint-placeholder-count="4">
+            <div class="sc-59">{{ w.label }}</div>
+          </sc-for>
+        </div>
+        <div class="sc-60">
+          <div class="sc-61">
+            <div class="sc-62 {{ brainProgressCls }}"></div>
+          </div>
+          <div class="sc-63">{{ brainCountdown }}</div>
+          <button class="sc-64" onClick="{{ onBrainReady }}">Я запомнил</button>
+          <div class="sc-65"></div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ brainAsking }}" hint-placeholder-val="{{ false }}">
+        <div class="sc-66">
+          <sc-for list="{{ brainOptions }}" as="o" hint-placeholder-count="4">
+            <button class="sc-67 {{ o.cls }}" onClick="{{ o.onPick }}">{{ o.label }}</button>
+          </sc-for>
+        </div>
+        <div class="sc-52">
+          <div class="sc-68 {{ brainFeedbackCls }}">{{ brainFeedback }}</div>
+          <button class="sc-69" onClick="{{ onBrainQuit }}">Закончить</button>
+          <div class="sc-65"></div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ brainDone }}" hint-placeholder-val="{{ false }}">
+        <div class="sc-70">
+          <div class="sc-71">
+            <div class="sc-72 {{ brainResultCls }}">{{ brainResultMark }}</div>
+            <div class="sc-73">{{ brainScore }}</div>
+            <div class="sc-74">{{ brainResultTitle }}</div>
+            <div class="sc-75">{{ brainResultText }}</div>
+          </div>
+          <div class="sc-76">
+            <div class="sc-20">СЛОВА БЫЛИ ТАКИЕ</div>
+            <div class="sc-77">{{ brainWordList }}</div>
+          </div>
+        </div>
+        <div class="sc-78">
+          <button class="sc-79" onClick="{{ onBrainStart }}">Ещё раз</button>
+          <button class="sc-80" onClick="{{ onBack }}">Назад к расписанию</button>
+          <div class="sc-65"></div>
+        </div>
+      </sc-if>
+    </sc-if>
+
+    <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+      <div class="sc-42">
+        <div class="sc-43">Мои лекарства</div>
+        <div class="sc-7">Нажмите на лекарство, чтобы изменить</div>
+      </div>
+
+      <div class="sc-81">
+        <sc-for list="{{ medRows }}" as="m" hint-placeholder-count="4">
+          <button class="sc-82" onClick="{{ m.onEdit }}">
+            <div class="sc-83">{{ m.time }}</div>
+            <div class="sc-84">
+              <div class="sc-85">{{ m.name }}</div>
+              <div class="sc-34">{{ m.dose }} · {{ m.note }}</div>
+            </div>
+            <div class="sc-86">›</div>
+          </button>
+        </sc-for>
+
+        <sc-if value="{{ medsEmpty }}" hint-placeholder-val="{{ false }}">
+          <div class="sc-87">
+            Список пуст. Нажмите «Добавить лекарство» внизу.
+          </div>
+        </sc-if>
+      </div>
+
+      <div class="sc-52">
+        <button class="sc-88" onClick="{{ onAdd }}">
+          <span class="sc-89">＋</span> Добавить лекарство
+        </button>
+        <button class="sc-54" onClick="{{ onBack }}">Назад к расписанию</button>
+        <div class="sc-55"></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isEdit }}" hint-placeholder-val="{{ false }}">
+      <div class="sc-90">
+        <div class="sc-91">{{ editTitle }}</div>
+      </div>
+
+      <div class="sc-92">
+        <div class="sc-93">
+          <div class="sc-94">НАЗВАНИЕ</div>
+          <input class="sc-95" value="{{ draftName }}" onChange="{{ onDraftName }}" placeholder="Например, Лизиноприл" />
+        </div>
+
+        <div class="sc-93">
+          <div class="sc-94">СКОЛЬКО ПРИНИМАТЬ</div>
+          <input class="sc-96" value="{{ draftDose }}" onChange="{{ onDraftDose }}" placeholder="Например, 1 таблетка, 10 мг" />
+        </div>
+
+        <div class="sc-93">
+          <div class="sc-94">ВРЕМЯ ПРИЁМА</div>
+          <div class="sc-97">
+            <div class="sc-98">{{ draftTime }}</div>
+            <div class="sc-99">
+              <div class="sc-100">
+                <div class="sc-101">Часы</div>
+                <div class="sc-102">
+                  <button class="sc-103" onClick="{{ onHourDown }}">−</button>
+                  <button class="sc-103" onClick="{{ onHourUp }}">+</button>
+                </div>
+              </div>
+              <div class="sc-100">
+                <div class="sc-101">Минуты</div>
+                <div class="sc-102">
+                  <button class="sc-103" onClick="{{ onMinDown }}">−</button>
+                  <button class="sc-103" onClick="{{ onMinUp }}">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sc-93">
+          <div class="sc-94">КОГДА</div>
+          <div class="sc-104">
+            <sc-for list="{{ noteOptions }}" as="n" hint-placeholder-count="4">
+              <button class="sc-105 {{ n.cls }}" onClick="{{ n.onPick }}">{{ n.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <sc-if value="{{ canDelete }}" hint-placeholder-val="{{ false }}">
+          <button class="sc-106" onClick="{{ onDelete }}">Удалить лекарство</button>
+        </sc-if>
+      </div>
+
+      <div class="sc-107">
+        <button class="sc-108" onClick="{{ onSave }}">Сохранить</button>
+        <button class="sc-80" onClick="{{ onCancel }}">Отмена</button>
+        <div class="sc-55"></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isContacts }}" hint-placeholder-val="{{ false }}">
+      <div class="sc-42">
+        <div class="sc-43">Близкие контакты</div>
+        <div class="sc-7">Им позвонит кнопка «Мне нужна помощь» — по порядку</div>
+      </div>
+
+      <div class="sc-81">
+        <sc-for list="{{ contactRows }}" as="c" hint-placeholder-count="2">
+          <button class="sc-82" onClick="{{ c.onEdit }}">
+            <div class="sc-109">{{ c.order }}</div>
+            <div class="sc-84">
+              <div class="sc-110">{{ c.name }}</div>
+              <div class="sc-111">{{ c.phone }}</div>
+              <div class="sc-112">{{ c.role }}</div>
+            </div>
+            <div class="sc-113">›</div>
+          </button>
+        </sc-for>
+
+        <sc-if value="{{ contactsEmpty }}" hint-placeholder-val="{{ false }}">
+          <div class="sc-87">
+            Контактов пока нет. Экстренный вызов пойдёт сразу в скорую 103.
+          </div>
+        </sc-if>
+
+        <div class="sc-114">
+          Последним в цепочке всегда идёт скорая помощь, 103.
+        </div>
+      </div>
+
+      <div class="sc-52">
+        <button class="sc-88" onClick="{{ onAddContact }}">
+          <span class="sc-89">＋</span> Добавить контакт
+        </button>
+        <button class="sc-54" onClick="{{ onBack }}">Назад к расписанию</button>
+        <div class="sc-55"></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isContactEdit }}" hint-placeholder-val="{{ false }}">
+      <div class="sc-90">
+        <div class="sc-91">{{ cTitle }}</div>
+      </div>
+
+      <div class="sc-92">
+        <div class="sc-93">
+          <div class="sc-94">ИМЯ</div>
+          <input class="sc-115" value="{{ cName }}" onChange="{{ onCName }}" placeholder="Например, Андрей" />
+        </div>
+
+        <div class="sc-93">
+          <div class="sc-94">НОМЕР ТЕЛЕФОНА</div>
+          <input class="sc-116" value="{{ cPhone }}" onChange="{{ onCPhone }}" type="tel" placeholder="+7 900 000-00-00" />
+        </div>
+
+        <div class="sc-93">
+          <div class="sc-94">ПРИМЕЧАНИЕ</div>
+          <input class="sc-117" value="{{ cRole }}" onChange="{{ onCRole }}" placeholder="Кем приходится, когда звонить" />
+        </div>
+
+        <sc-if value="{{ cCanDelete }}" hint-placeholder-val="{{ false }}">
+          <button class="sc-106" onClick="{{ onCDelete }}">Удалить контакт</button>
+        </sc-if>
+      </div>
+
+      <div class="sc-107">
+        <button class="sc-108" onClick="{{ onCSave }}">Сохранить</button>
+        <button class="sc-80" onClick="{{ onCCancel }}">Отмена</button>
+        <div class="sc-55"></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isSos }}" hint-placeholder-val="{{ false }}">
+      <div class="sc-118">
+        <div class="sc-119">
+          <span class="sc-120"></span>
+          <span class="sc-121">ЭКСТРЕННЫЙ ВЫЗОВ</span>
+        </div>
+
+        <div class="sc-122">
+          <div class="sc-123">{{ sosAction }}</div>
+          <div class="sc-124">{{ sosName }}</div>
+          <div class="sc-125">{{ sosRole }} · {{ sosPhone }}</div>
+          <div class="sc-126">{{ sosHint }}</div>
+        </div>
+
+        <div class="sc-127">
+          <sc-if value="{{ sosCanNext }}" hint-placeholder-val="{{ true }}">
+            <button class="sc-128" onClick="{{ onSosNext }}">{{ sosNextLabel }}</button>
+          </sc-if>
+          <button class="sc-129" onClick="{{ onSosCancel }}">Отменить вызов</button>
+          <div class="sc-130"></div>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <div class="sc-131">
+    <div class="sc-132">ДЕМО-УПРАВЛЕНИЕ</div>
+    <div class="sc-133">
+      <button class="sc-134" onClick="{{ onJump }}">К следующему приёму</button>
+      <button class="sc-134" onClick="{{ onReset }}">Сбросить день</button>
+    </div>
+    <div class="sc-135">Время ускорено. Список лекарств сохраняется на устройстве.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:440,&quot;height&quot;:1080},&quot;demoSpeed&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:20,&quot;min&quot;:1,&quot;max&quot;:120,&quot;step&quot;:1,&quot;unit&quot;:&quot;×&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Поведение&quot;},&quot;caregiver&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Анне&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Контакт&quot;}}">const DEFAULT_MEDS = [
+  { id: 1, t: 9 * 60, name: 'Лизиноприл', dose: '1 таблетка, 10 мг', note: 'После еды' },
+  { id: 2, t: 13 * 60, name: 'Метформин', dose: '1 таблетка, 500 мг', note: 'Во время еды' },
+  { id: 3, t: 19 * 60, name: 'Аторвастатин', dose: '1 таблетка, 20 мг', note: 'После еды' },
+  { id: 4, t: 21 * 60 + 30, name: 'Витамин D', dose: '1 капля', note: 'Перед сном' }
+];
+const NOTES = ['До еды', 'Во время еды', 'После еды', 'Натощак', 'Перед сном'];
+const STORE = 'silvercare.meds.v1';
+const BRAIN_STORE = 'silvercare.brain.v1';
+const BRAIN_WORDS = ['Яблоко', 'Ключи', 'Лампа', 'Река', 'Письмо', 'Чайник', 'Зонт', 'Сосед', 'Часы', 'Кресло', 'Груша', 'Поезд', 'Окно', 'Книга', 'Мёд', 'Ложка', 'Сад', 'Лестница'];
+const BRAIN_SHOW_SEC = 8;
+const ACCOUNT_STORE = 'silvercare.account.v1';
+const DEMO_CODE = '1234';
+const AUTH_VIEWS = ['welcome', 'signup', 'verify', 'watch'];
+
+function loadAccount() {
+  try {
+    const a = JSON.parse(localStorage.getItem(ACCOUNT_STORE));
+    return a && a.name && a.phone ? a : null;
+  } catch (e) { return null; }
+}
+const blankReg = () => ({ role: 'senior', name: '', phone: '', code: '', loveName: '', lovePhone: '', error: '', back: null });
+const phoneOk = p => p.replace(/\D/g, '').length >= 10;
+
+class Component extends DCLogic {
+  state = {
+    sec: 8 * 3600 + 59 * 60 + 40,
+    meds: DEFAULT_MEDS,
+    taken: {}, snooze: {}, spoken: null,
+    account: loadAccount(),
+    view: loadAccount() ? 'today' : 'welcome',
+    reg: blankReg(),
+    draft: null,
+    sos: null,
+    contacts: [
+      { id: 1, name: 'Анна', role: 'Дочь', phone: '+7 916 204-18-03' },
+      { id: 2, name: 'Пётр Ильич', role: 'Сосед из 42 кв.', phone: '+7 916 771-09-55' }
+    ],
+    cDraft: null,
+    brain: null,
+    brainStats: { streak: 0, last: null, plays: 0 }
+  };
+
+  setReg(patch) { this.setState(s => ({ reg: { ...s.reg, error: '', ...patch } })); }
+  persistAccount(a) { try { localStorage.setItem(ACCOUNT_STORE, JSON.stringify(a)); } catch (e) {} }
+
+  submitSignup() {
+    const r = this.state.reg;
+    if (!r.name.trim()) { this.setReg({ error: 'Введите ваше имя' }); return; }
+    if (!phoneOk(r.phone)) { this.setReg({ error: 'Введите номер телефона полностью, например +7 900 000-00-00' }); return; }
+    this.setState({ view: 'verify', reg: { ...r, code: '', error: '' } });
+    this.focusField('.code-input');
+  }
+  focusField(sel) {
+    setTimeout(() => { const el = document.querySelector(sel); if (el) el.focus(); }, 80);
+  }
+  submitCode() {
+    const r = this.state.reg;
+    if (r.code.trim() !== DEMO_CODE) { this.setReg({ error: 'Код не подошёл. Проверьте цифры и попробуйте ещё раз.' }); return; }
+    const account = { role: r.role, name: r.name.trim(), phone: r.phone.trim(), watched: null };
+    this.persistAccount(account);
+    this.setState({ account, view: r.role === 'helper' ? 'watch' : 'today', reg: { ...blankReg(), role: r.role } });
+  }
+  saveWatched() {
+    const r = this.state.reg;
+    if (!r.loveName.trim()) { this.setReg({ error: 'Введите имя близкого' }); return; }
+    if (!phoneOk(r.lovePhone)) { this.setReg({ error: 'Введите номер телефона полностью' }); return; }
+    const account = { ...this.state.account, watched: { name: r.loveName.trim(), phone: r.lovePhone.trim() } };
+    this.persistAccount(account);
+    this.setState({ account, view: r.back || 'today', reg: blankReg() });
+  }
+  logout() {
+    try { localStorage.removeItem(ACCOUNT_STORE); } catch (e) {}
+    this.setState({ account: null, view: 'welcome', reg: blankReg() });
+  }
+
+  startBrain() {
+    const pool = [...BRAIN_WORDS].sort(() => Math.random() - 0.5);
+    const targets = pool.slice(0, 4);
+    const rest = pool.slice(4);
+    const qs = targets.slice(0, 3).map((t, i) => ({
+      answer: t,
+      options: [t, ...rest.slice(i * 3, i * 3 + 3)].sort(() => Math.random() - 0.5)
+    }));
+    clearInterval(this.brainTimer);
+    this.setState({ view: 'brainPlay', brain: { phase: 'show', left: BRAIN_SHOW_SEC, targets, qs, qi: 0, correct: 0, picked: null, wasRight: false } });
+    this.brainTimer = setInterval(() => {
+      const b = this.state.brain;
+      if (!b || b.phase !== 'show') { clearInterval(this.brainTimer); return; }
+      if (b.left > 1) this.setState({ brain: { ...b, left: b.left - 1 } });
+      else { clearInterval(this.brainTimer); this.setState({ brain: { ...b, left: 0, phase: 'ask' } }); }
+    }, 1000);
+  }
+
+  brainReady() {
+    clearInterval(this.brainTimer);
+    const b = this.state.brain;
+    if (b) this.setState({ brain: { ...b, phase: 'ask', left: 0 } });
+  }
+
+  brainPick(word) {
+    const b = this.state.brain;
+    if (!b || b.phase !== 'ask' || b.picked) return;
+    const right = word === b.qs[b.qi].answer;
+    this.setState({ brain: { ...b, picked: word, wasRight: right, correct: b.correct + (right ? 1 : 0) } });
+    clearTimeout(this.brainNextTimer);
+    this.brainNextTimer = setTimeout(() => {
+      const cur = this.state.brain;
+      if (!cur) return;
+      if (cur.qi >= cur.qs.length - 1) this.finishBrain(cur);
+      else this.setState({ brain: { ...cur, qi: cur.qi + 1, picked: null, wasRight: false } });
+    }, 1100);
+  }
+
+  finishBrain(b) {
+    const perfect = b.correct === b.qs.length;
+    const stats = {
+      streak: perfect ? (this.state.brainStats.streak || 0) + 1 : 0,
+      last: `${b.correct} из ${b.qs.length}`,
+      plays: (this.state.brainStats.plays || 0) + 1
+    };
+    try { localStorage.setItem(BRAIN_STORE, JSON.stringify(stats)); } catch (e) {}
+    this.setState({ brainStats: stats, brain: { ...b, phase: 'done', picked: null } });
+  }
+
+  sosChain() {
+    return [...this.state.contacts, { id: 0, name: 'Скорая помощь', role: 'Единая служба', phone: '103' }];
+  }
+  persistContacts(list) { try { localStorage.setItem('silvercare.contacts.v1', JSON.stringify(list)); } catch (e) {} }
+  setCDraft(patch) { this.setState(s => ({ cDraft: { ...s.cDraft, ...patch } })); }
+  startSos() {
+    this.setState({ sos: { stage: 0, left: 20 } });
+    clearInterval(this.sosTimer);
+    this.sosTimer = setInterval(() => this.tickSos(), 1000);
+  }
+  tickSos() {
+    const s = this.state.sos;
+    if (!s) { clearInterval(this.sosTimer); return; }
+    if (s.left > 1) { this.setState({ sos: { ...s, left: s.left - 1 } }); return; }
+    this.nextSos();
+  }
+  nextSos() {
+    const s = this.state.sos;
+    if (!s) return;
+    const chain = this.sosChain();
+    if (s.stage >= chain.length - 1) { this.setState({ sos: { ...s, left: 0 } }); clearInterval(this.sosTimer); return; }
+    this.setState({ sos: { stage: s.stage + 1, left: 20 } });
+  }
+  endSos() {
+    clearInterval(this.sosTimer);
+    this.setState({ sos: null });
+  }
+
+  componentDidMount() {
+    try {
+      const raw = localStorage.getItem(STORE);
+      if (raw) { const m = JSON.parse(raw); if (Array.isArray(m)) this.setState({ meds: m }); }
+      const rawC = localStorage.getItem('silvercare.contacts.v1');
+      if (rawC) { const c = JSON.parse(rawC); if (Array.isArray(c)) this.setState({ contacts: c }); }
+      const rawB = localStorage.getItem(BRAIN_STORE);
+      if (rawB) { const b = JSON.parse(rawB); if (b && typeof b === 'object') this.setState({ brainStats: { streak: b.streak || 0, last: b.last || null, plays: b.plays || 0 } }); }
+    } catch (e) {}
+    this.timer = setInterval(() => {
+      const mult = this.props.demoSpeed ?? 20;
+      this.setState(s => ({ sec: (s.sec + mult * 0.25) % 86400 }));
+    }, 250);
+  }
+  componentWillUnmount() { clearInterval(this.timer); clearInterval(this.sosTimer); clearInterval(this.brainTimer); clearTimeout(this.brainNextTimer); }
+
+  persist(meds) { try { localStorage.setItem(STORE, JSON.stringify(meds)); } catch (e) {} }
+  sorted() { return [...this.state.meds].sort((a, b) => a.t - b.t); }
+
+
+  due() {
+    const now = this.state.sec / 60;
+    return this.sorted().find(d => {
+      if (this.state.taken[d.id]) return false;
+      const t = d.t + (this.state.snooze[d.id] || 0);
+      return now >= t && now < t + 90;
+    }) || null;
+  }
+  next() {
+    const now = this.state.sec / 60;
+    return this.sorted().find(d => !this.state.taken[d.id] && d.t + (this.state.snooze[d.id] || 0) > now) || null;
+  }
+  fmt(min) {
+    const m = Math.floor(((min % 1440) + 1440) % 1440);
+    return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+  }
+  setDraft(patch) { this.setState(s => ({ draft: { ...s.draft, ...patch } })); }
+
+  renderVals() {
+    const now = this.state.sec / 60;
+    const meds = this.sorted();
+    const due = this.due();
+    const next = this.next();
+    const acc = this.state.account;
+    const reg = this.state.reg;
+    const caregiver = this.props.caregiver ?? 'Анне';
+    const draft = this.state.draft || { name: '', dose: '', t: 9 * 60, note: 'После еды', id: null };
+
+    const doses = meds.map(d => {
+      const t = d.t + (this.state.snooze[d.id] || 0);
+      let status = 'Позже', cls = 'tone-muted';
+      if (this.state.taken[d.id]) { status = 'Принято'; cls = 'tone-ok'; }
+      else if (due && due.id === d.id) { status = 'Сейчас'; cls = 'tone-alert'; }
+      else if (now > t + 90) { status = 'Пропущено'; cls = 'tone-bad'; }
+      return { time: this.fmt(t), name: d.name, dose: d.dose, status, cls };
+    });
+
+    const medRows = meds.map(m => ({
+      time: this.fmt(m.t), name: m.name, dose: m.dose, note: m.note,
+      onEdit: () => this.setState({ view: 'edit', draft: { ...m } })
+    }));
+
+    const noteOptions = NOTES.map(label => ({
+      label,
+      cls: draft.note === label ? 'tone-selected' : 'tone-plain',
+      onPick: () => this.setDraft({ note: label })
+    }));
+
+    let countdownText = '';
+    if (next) {
+      const left = Math.max(0, Math.round(next.t + (this.state.snooze[next.id] || 0) - now));
+      countdownText = left >= 60 ? `через ${Math.floor(left / 60)} ч ${left % 60} мин` : `через ${left} мин`;
+    }
+
+    const cD = this.state.cDraft || { id: null, name: '', phone: '', role: '' };
+    const contactRows = this.state.contacts.map((c, i) => ({
+      name: c.name, phone: c.phone, role: c.role || '—', order: `${i + 1}-й`,
+      onEdit: () => this.setState({ view: 'contactEdit', cDraft: { ...c } })
+    }));
+
+    const sos = this.state.sos;
+    const chain = this.sosChain();
+    const sosC = sos ? chain[sos.stage] : chain[0];
+    const sosLast = sos ? sos.stage >= chain.length - 1 : false;
+    let sosHint = '';
+    if (sos) {
+      if (sosLast) sosHint = sos.left > 0 ? 'Идёт соединение со скорой помощью. Не кладите телефон.' : 'Соединение установлено. Говорите спокойно.';
+      else sosHint = `Если не ответит за ${sos.left} сек., позвоню следующему: ${chain[sos.stage + 1].name}.`;
+    }
+
+    const b = this.state.brain;
+    const bs = this.state.brainStats;
+    const q = b && b.qs ? b.qs[b.qi] : null;
+    const brainOptions = q ? q.options.map(label => {
+      let cls = 'tone-plain';
+      if (b.picked) {
+        if (label === q.answer) cls = 'tone-right';
+        else if (label === b.picked) cls = 'tone-bad';
+      }
+      return { label, cls, onPick: () => this.brainPick(label) };
+    }) : [];
+    const perfect = b ? b.correct === b.qs.length : false;
+
+    return {
+      clockText: this.fmt(now),
+      isWelcome: this.state.view === 'welcome',
+      isSignup: this.state.view === 'signup',
+      isVerify: this.state.view === 'verify',
+      isWatch: this.state.view === 'watch',
+      isSettings: this.state.view === 'settings',
+      signupTitle: reg.role === 'helper' ? 'Регистрация помощника' : 'Давайте познакомимся',
+      regName: reg.name, regPhone: reg.phone, regCode: reg.code,
+      regError: reg.error, hasRegError: !!reg.error,
+      loveName: reg.loveName, lovePhone: reg.lovePhone,
+      watchSkipLabel: reg.back ? 'Отмена' : 'Пропустить',
+      hasAccount: !!acc,
+      isDemoAcc: !acc,
+      isHelperAcc: !!acc && acc.role === 'helper',
+      accStatus: acc ? 'Вы вошли в аккаунт' : 'Демо-версия без регистрации',
+      accName: acc ? acc.name : '',
+      accPhone: acc ? acc.phone : '',
+      accRole: acc ? (acc.role === 'helper' ? 'помогаю близкому' : 'получаю напоминания') : '',
+      watchedName: acc && acc.watched ? acc.watched.name : 'Не указан',
+      watchedPhone: acc && acc.watched ? acc.watched.phone : 'Нажмите, чтобы добавить',
+      onPickSenior: () => this.setState({ view: 'signup', reg: { ...blankReg(), role: 'senior' } }),
+      onPickHelper: () => this.setState({ view: 'signup', reg: { ...blankReg(), role: 'helper' } }),
+      onDemo: () => this.setState({ view: 'today', reg: blankReg() }),
+      onRegName: e => this.setReg({ name: e.target.value }),
+      onRegPhone: e => this.setReg({ phone: e.target.value }),
+      onRegCode: e => this.setReg({ code: e.target.value.replace(/\D/g, '').slice(0, 4) }),
+      onSignupNext: () => this.submitSignup(),
+      onVerify: () => this.submitCode(),
+      onAuthBack: () => this.setState({ view: this.state.view === 'verify' ? 'signup' : 'welcome', reg: { ...this.state.reg, error: '' } }),
+      onLoveName: e => this.setReg({ loveName: e.target.value }),
+      onLovePhone: e => this.setReg({ lovePhone: e.target.value }),
+      onWatchSave: () => this.saveWatched(),
+      onWatchSkip: () => this.setState({ view: this.state.reg.back || 'today', reg: blankReg() }),
+      onEditWatch: () => this.setState({ view: 'watch', reg: { ...blankReg(), back: 'settings', loveName: acc && acc.watched ? acc.watched.name : '', lovePhone: acc && acc.watched ? acc.watched.phone : '' } }),
+      onOpenSettings: () => this.setState({ view: 'settings' }),
+      onLogout: () => this.logout(),
+      onRegisterFromDemo: () => this.setState({ view: 'welcome', reg: blankReg() }),
+      isBrain: this.state.view === 'brain',
+      isBrainPlay: this.state.view === 'brainPlay',
+      brainShowing: !!b && b.phase === 'show',
+      brainAsking: !!b && b.phase === 'ask',
+      brainDone: !!b && b.phase === 'done',
+      brainStreak: bs.streak || 0,
+      brainLast: bs.last || '—',
+      brainBadge: bs.streak ? `${bs.streak} дн.` : 'Новое',
+      brainBadgeCls: bs.streak ? 'tone-ok' : 'tone-info',
+      brainWords: b ? b.targets.map(label => ({ label })) : [],
+      brainWordList: b ? b.targets.join(' · ') : '',
+      brainCountdown: b ? `Осталось ${b.left} сек.` : '',
+      brainProgressCls: `progress-${b ? Math.max(0, Math.min(BRAIN_SHOW_SEC, b.left)) : 0}`,
+      brainStepLabel: b ? (b.phase === 'show' ? 'ШАГ 1 ИЗ 2' : b.phase === 'ask' ? `ВОПРОС ${b.qi + 1} ИЗ ${b.qs.length}` : 'ГОТОВО') : '',
+      brainTitle: b ? (b.phase === 'show' ? 'Запомните эти слова' : b.phase === 'ask' ? 'Какое слово вы видели?' : 'Упражнение окончено') : '',
+      brainOptions,
+      brainFeedback: b && b.picked ? (b.wasRight ? 'Верно' : `Было слово «${q.answer}»`) : '',
+      brainFeedbackCls: b && b.wasRight ? 'text-ok' : 'text-bad',
+      brainScore: b ? `${b.correct} из ${b.qs.length}` : '',
+      brainResultMark: perfect ? '✓' : '•',
+      brainResultCls: perfect ? 'tone-ok' : 'tone-info',
+      brainResultTitle: perfect ? 'Всё верно' : 'Хорошая работа',
+      brainResultText: perfect
+        ? `Серия — ${bs.streak} дн. Возвращайтесь завтра, память любит постоянство.`
+        : 'Память тренируется повторением. Попробуйте ещё раз — станет легче.',
+      onOpenBrain: () => this.setState({ view: 'brain', brain: null }),
+      onBrainStart: () => this.startBrain(),
+      onBrainReady: () => this.brainReady(),
+      onBrainQuit: () => { clearInterval(this.brainTimer); clearTimeout(this.brainNextTimer); this.setState({ view: 'brain', brain: null }); },
+      isSos: !!sos,
+      sosAction: sos ? (sos.left > 0 || !sosLast ? 'Звоню' : 'На линии') : '',
+      sosName: sosC.name,
+      sosRole: sosC.role,
+      sosPhone: sosC.phone,
+      sosHint,
+      sosCanNext: !!sos && !sosLast,
+      sosNextLabel: sos && !sosLast ? `Сразу позвонить: ${chain[sos.stage + 1].name}` : '',
+      isContacts: this.state.view === 'contacts',
+      isContactEdit: this.state.view === 'contactEdit',
+      contactRows,
+      contactsEmpty: this.state.contacts.length === 0,
+      cTitle: cD.id ? 'Изменить контакт' : 'Новый контакт',
+      cName: cD.name, cPhone: cD.phone, cRole: cD.role,
+      cCanDelete: !!cD.id,
+      onOpenContacts: () => this.setState({ view: 'contacts' }),
+      onAddContact: () => this.setState({ view: 'contactEdit', cDraft: { id: null, name: '', phone: '', role: '' } }),
+      onCName: e => this.setCDraft({ name: e.target.value }),
+      onCPhone: e => this.setCDraft({ phone: e.target.value }),
+      onCRole: e => this.setCDraft({ role: e.target.value }),
+      onCSave: () => {
+        const d = this.state.cDraft;
+        if (!d || !d.name.trim()) { this.setState({ view: 'contacts', cDraft: null }); return; }
+        const rec = { id: d.id || Date.now(), name: d.name.trim(), phone: d.phone.trim(), role: d.role.trim() };
+        const list = d.id ? this.state.contacts.map(c => (c.id === d.id ? rec : c)) : [...this.state.contacts, rec];
+        this.persistContacts(list);
+        this.setState({ contacts: list, view: 'contacts', cDraft: null });
+      },
+      onCDelete: () => {
+        const d = this.state.cDraft;
+        const list = this.state.contacts.filter(c => c.id !== (d && d.id));
+        this.persistContacts(list);
+        this.setState({ contacts: list, view: 'contacts', cDraft  : null });
+      },
+      onCCancel: () => this.setState({ view: 'contacts', cDraft: null }),
+      onSos: () => this.startSos(),
+      onSosNext: () => this.nextSos(),
+      onSosCancel: () => this.endSos(),
+      dateText: 'среда, 19 сентября',
+      takenCount: Object.keys(this.state.taken).length,
+      totalCount: meds.length,
+      caregiver,
+      isToday: this.state.view === 'today',
+      isList: this.state.view === 'list',
+      isEdit: this.state.view === 'edit',
+      isDue: !!due,
+      isWaiting: !due && !!next,
+      isDone: !due && !next,
+      doneTitle: meds.length ? 'Все лекарства на сегодня приняты' : 'Лекарства ещё не добавлены',
+      doneSubtitle: meds.length ? `${caregiver} отправлено уведомление` : 'Откройте «Мои лекарства» и добавьте первое',
+      dueName: due ? due.name : '',
+      dueDose: due ? due.dose : '',
+      dueNote: due ? due.note : '',
+      dueTime: due ? this.fmt(due.t + (this.state.snooze[due.id] || 0)) : '',
+      nextTime: next ? this.fmt(next.t + (this.state.snooze[next.id] || 0)) : '',
+      nextName: next ? next.name : '',
+      nextDose: next ? next.dose : '',
+      countdownText,
+      doses, medRows, noteOptions,
+      medsEmpty: meds.length === 0,
+      editTitle: draft.id ? 'Изменить лекарство' : 'Новое лекарство',
+      draftName: draft.name,
+      draftDose: draft.dose,
+      draftTime: this.fmt(draft.t),
+      canDelete: !!draft.id,
+
+      onOpenList: () => this.setState({ view: 'list' }),
+      onBack: () => this.setState({ view: 'today' }),
+      onAdd: () => this.setState({ view: 'edit', draft: { id: null, name: '', dose: '', t: 9 * 60, note: 'После еды' } }),
+      onDraftName: e => this.setDraft({ name: e.target.value }),
+      onDraftDose: e => this.setDraft({ dose: e.target.value }),
+      onHourUp: () => this.setDraft({ t: (draft.t + 60) % 1440 }),
+      onHourDown: () => this.setDraft({ t: (draft.t + 1380) % 1440 }),
+      onMinUp: () => this.setDraft({ t: (draft.t + 5) % 1440 }),
+      onMinDown: () => this.setDraft({ t: (draft.t + 1435) % 1440 }),
+      onSave: () => {
+        const d = this.state.draft;
+        if (!d || !d.name.trim()) { this.setState({ view: 'list', draft: null }); return; }
+        const rec = { id: d.id || Date.now(), name: d.name.trim(), dose: d.dose.trim() || '1 таблетка', t: d.t, note: d.note };
+        const meds2 = d.id ? this.state.meds.map(m => (m.id === d.id ? rec : m)) : [...this.state.meds, rec];
+        this.persist(meds2);
+        this.setState({ meds: meds2, view: 'list', draft: null });
+      },
+      onDelete: () => {
+        const d = this.state.draft;
+        const meds2 = this.state.meds.filter(m => m.id !== (d && d.id));
+        this.persist(meds2);
+        this.setState({ meds: meds2, view: 'list', draft: null });
+      },
+      onCancel: () => this.setState({ view: 'list', draft: null }),
+
+      onTake: () => {
+        if (!due) return;
+        this.setState(s => ({ taken: { ...s.taken, [due.id]: true }, spoken: null }));
+      },
+      onSnooze: () => {
+        if (!due) return;
+        this.setState(s => ({ snooze: { ...s.snooze, [due.id]: (s.snooze[due.id] || 0) + 15 }, spoken: null }));
+      },
+      onJump: () => { if (next) this.setState({ sec: (next.t + (this.state.snooze[next.id] || 0)) * 60 - 5, view: AUTH_VIEWS.includes(this.state.view) ? this.state.view : 'today' }); },
+      onReset: () => this.setState({ sec: 8 * 3600 + 59 * 60 + 40, taken: {}, snooze: {}, spoken: null, view: AUTH_VIEWS.includes(this.state.view) ? this.state.view : 'today' })
+    };
+  }
+}
+</script>
+</body>
+</html>
