@@ -216,27 +216,32 @@
 
       <div class="sc-27">
         <div class="sc-28">РАСПИСАНИЕ ДНЯ</div>
-        <sc-for list="{{ doses }}" as="d" hint-placeholder-count="4">
-          <div class="sc-29">
-            <div class="sc-30">
-              <div class="sc-31">{{ d.time }}</div>
-              <div class="sc-32 {{ d.cls }}">{{ d.status }}</div>
+        <div class="schedule-list">
+          <sc-for list="{{ doses }}" as="d" hint-placeholder-count="4">
+            <div class="sc-29">
+              <div class="sc-30">
+                <div class="sc-31">{{ d.time }}</div>
+                <div class="sc-32 {{ d.cls }}">{{ d.status }}</div>
+              </div>
+              <div class="sc-33">{{ d.name }}</div>
+              <div class="sc-34">{{ d.dose }}</div>
             </div>
-            <div class="sc-33">{{ d.name }}</div>
-            <div class="sc-34">{{ d.dose }}</div>
+          </sc-for>
+
+          <div class="schedule-menu">
+            <button class="sc-38" onClick="{{ onOpenContacts }}">Близкие контакты</button>
+            <button class="sc-38" onClick="{{ onOpenList }}">Мои лекарства</button>
+            <button class="sc-39" onClick="{{ onOpenBrain }}">
+              <span>Тренировка памяти</span>
+              <span class="sc-40 {{ brainBadgeCls }}">{{ brainBadge }}</span>
+            </button>
           </div>
-        </sc-for>
+        </div>
       </div>
 
       <div class="sc-35">
         <button class="sc-36" onClick="{{ onSos }}">
           <span class="sc-37"></span> Мне нужна помощь
-        </button>
-        <button class="sc-38" onClick="{{ onOpenContacts }}">Близкие контакты</button>
-        <button class="sc-38" onClick="{{ onOpenList }}">Мои лекарства</button>
-        <button class="sc-39" onClick="{{ onOpenBrain }}">
-          <span>Тренировка памяти</span>
-          <span class="sc-40 {{ brainBadgeCls }}">{{ brainBadge }}</span>
         </button>
         <div class="sc-41"></div>
       </div>
@@ -465,7 +470,7 @@
         <button class="sc-54" onClick="{{ onBack }}">Назад к расписанию</button>
         <div class="sc-55"></div>
       </div>
-    </sc-if>
+    </sc-if>ПОЧЕ
 
     <sc-if value="{{ isContactEdit }}" hint-placeholder-val="{{ false }}">
       <div class="sc-90">
